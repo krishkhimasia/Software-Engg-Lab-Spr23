@@ -2,11 +2,13 @@
 
 using namespace std;
 
+const int maxProd=6;
+
 typedef struct _customer{
     int id;
     string name;
     int zip;
-    vector <int> pList;
+    vector <pair<int,int>> pList;
 }customer;
 
 typedef struct _prod{
@@ -18,7 +20,7 @@ typedef struct _shop{
     int id;
     string name;
     int zip;
-    vector <int> prodq(6);
+    vector <int> prodq;
 }shop;
 
 typedef struct _agent{
@@ -37,13 +39,13 @@ int main()
     int choice,f=1;
     while (f){
         cout<<"What do you wanna do?"<<endl;
-        cout<<"1) Create entity\n2) Delete entity\n3) Print entities\n4) Add some amount of a product to a shop\n5) Place an order\n6) List my purchases\n7) List inventory of shop\n8) Exit\n";
+        cout<<"1) Create entity\n2) Delete entity\n3) Print entities\n4) Add some amount of a product to a shop\n5) Place an order\n6) List my purchases\n7) List inventory of shop\n8) Exit\n\n";
         cin>>choice;
         switch(choice){
             case 1:
             {
                 int c;
-                cout<<"Enter the type of entity you wish to create:\n1)Customer\n2)Shop\n3)Delivery Agent\n4)Product\n";
+                cout<<"Enter the type of entity you wish to create:\n1)Customer\n2)Shop\n3)Delivery Agent\n\n";
                 cin>>c;
                 switch(c){
                     case 1:
@@ -67,6 +69,7 @@ int main()
                         cin>>s.name;
                         cout<<"Enter zipcode: ";
                         cin>>s.zip;
+                        s.prodq.resize(6);
                         for(int i=1;i<6;i++)
                         {
                             cout<<"Enter amount of product "<<i<<": ";
@@ -89,12 +92,54 @@ int main()
                         break;
                     }
                 }
+                cout<<"Entity Created Successfully\n\n";
                 break;
             }
             case 2:
             {
-                choice c;
-                cout<<"Enter the type of entity you wish to delete:\n1)Customer\n2)Shop\n3)Delivery Agent\n4)Product\n";
+                cout<<"List of entities:\n";
+                cout<<"Customers:\n";
+                if(!custs.size())
+                {
+                    cout<<"No customers\n";
+                }
+                else
+                {
+                    for(auto &c : custs)
+                    {
+                        printf("id: %d    name: ",c.id);
+                        cout<<c.name<<endl;
+                    }
+                }
+                cout<<"\nShops:\n";
+                if(!shops.size())
+                {
+                    cout<<"No shops\n";
+                }
+                else
+                {
+                    for(auto &s : shops)
+                    {
+                        printf("id: %d    name: ",s.id);
+                        cout<<s.name<<endl;
+                    }
+                }
+                cout<<"\nAgents:\n";
+                if(!agents.size())
+                {
+                    cout<<"No agents\n";
+                }
+                else
+                {
+                for(auto &a : agents)
+                    {
+                        printf("id: %d    name: ",a.id);
+                        cout<<a.name<<endl;
+                    }
+                }
+                cout<<endl;
+                int c,f=0;
+                cout<<"Enter the type of entity you wish to delete:\n1)Customer\n2)Shop\n3)Delivery Agent\n4)Product\n\n";
                 cin>>c;
                 switch(c){
                     case 1:
@@ -106,10 +151,12 @@ int main()
                         {
                             if(i->id==id)
                             {
+                                f=1;
                                 custs.erase(i);
                                 break;
                             }
                         }
+                        break;
                     }
                     case 2:
                     {
@@ -120,10 +167,12 @@ int main()
                         {
                             if(i->id==id)
                             {
+                                f=1;
                                 shops.erase(i);
                                 break;
                             }
                         }
+                        break;
                     }
                     case 3:
                     {
@@ -134,37 +183,68 @@ int main()
                         {
                             if(i->id==id)
                             {
+                                f=1;
                                 agents.erase(i);
                                 break;
                             }
                         }
+                        break;
                     }
                 }
+                if(f)
+                cout<<"Deleted Successfully\n\n";
+                else
+                cout<<"Entity doesn't exist anyway\n\n";
                 break;
             }
             case 3:
             {
                 cout<<"Customers:\n";
-                for(auto &c : custs)
+                if(!custs.size())
                 {
-                    printf("id: %d    name: %s\n",c.id,c.name);
+                    cout<<"No customers\n";
                 }
-                cout<<"\nShops\n";
-                for(auto &s : shops)
+                else
                 {
-                    printf("id: %d    name: %s\n",s.id,s.name);
+                    for(auto &c : custs)
+                    {
+                        printf("id: %d    name: ",c.id);
+                        cout<<c.name<<endl;
+                    }
                 }
-                cout<<"\nAgents\n";
+                cout<<"\nShops:\n";
+                if(!shops.size())
+                {
+                    cout<<"No shops\n";
+                }
+                else
+                {
+                    for(auto &s : shops)
+                    {
+                        printf("id: %d    name: ",s.id);
+                        cout<<s.name<<endl;
+                    }
+                }
+                cout<<"\nAgents:\n";
+                if(!agents.size())
+                {
+                    cout<<"No agents\n";
+                }
+                else
+                {
                 for(auto &a : agents)
-                {
-                    printf("id: %d    name: %s\n",s.id,s.name);
+                    {
+                        printf("id: %d    name: ",a.id);
+                        cout<<a.name<<endl;
+                    }
                 }
+                cout<<endl;
                 break;
             }
             case 4:
             {
                 int id;
-                cout<<"Choose shop by entering id:\n"
+                cout<<"Choose shop by entering id:\n";
                 for(auto &s : shops)
                 {
                     printf("id: %d    name: %s\n",s.id,s.name);
@@ -186,18 +266,94 @@ int main()
             }
             case 5:
             {
-
+                int cid,pid,q,zip,f=0;
+                shop valids;
+                agent valida;
+                customer cust;
+                cout<<"Enter your customer id: ";
+                cin>>cid;
+                for(auto &c: custs)
+                {
+                    if(c.id==cid)
+                    {
+                        cust=c;
+                        break;
+                    }
+                }
+                cout<<"Enter the product id (1-5) and quantity required of the same: ";
+                cin>>pid>>q;
+                for(auto &s: shops)
+                {
+                    if(s.zip==cust.zip)
+                    {
+                        if(q<=s.prodq[pid])
+                        {
+                            valids=s;
+                            f=1;
+                            s.prodq[pid]-=q;
+                            break;
+                        }
+                    }
+                }
+                for(auto &a: agents)
+                {
+                    if(a.zip==cust.zip)
+                    {
+                        valida=a;
+                        if(f==1)
+                        {
+                            f=2;
+                        }
+                        break;
+                    }
+                }
+                if(f==0)
+                {
+                    cout<<"No shop in your area can meet your requirements.\n";
+                }
+                else if(f==1)
+                {
+                    cout<<"No delivery agent available.\n";
+                }
+                else
+                {
+                    cust.pList.push_back({pid,q});
+                    cout<<"Order placed successfully.\n";
+                }
                 break;
             }
             case 6:
             {
-
+                int cid;
+                customer cust;
+                cout<<"Enter your customer id: ";
+                cin>>cid;
+                for(auto &c: custs)
+                {
+                    if(c.id==cid)
+                    {
+                        cust=c;
+                        break;
+                    }
+                }
+                if(cust.pList.size())
+                {
+                    cout<<"List of purchases:\n";
+                    for(auto &p:cust.pList)
+                    {
+                        cout<<"Product "<<p.first<<": "<<p.second<<endl;
+                    }
+                }
+                else
+                {
+                    cout<<"No purchase made.\n\n";
+                }
                 break;
             }
             case 7:
             {
                 int id;
-                cout<<"Choose shop by entering id:\n"
+                cout<<"Choose shop by entering id:\n";
                 for(auto &s : shops)
                 {
                     printf("id: %d    name: %s\n",s.id,s.name);
@@ -213,7 +369,7 @@ int main()
                 }
                 for(int i=1;i<6;i++)
                 {
-                    printf("Product %d: %d",it->)
+                    printf("Product %d: %d\n",i,it->prodq[i]);
                 }
                 break;
             }
