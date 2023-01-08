@@ -23,11 +23,10 @@ typedef struct _shop{
     vector <int> prodq;
 }shop;
 
-typedef struct _agent{
+typedef struct _agent{      //products delivered is stored in the vector of <int,agent> in main()
     int id;
     string name;
     int zip;
-    int prodDelivered;
 }agent;
 
 int main()
@@ -35,7 +34,7 @@ int main()
     vector <customer> custs;
     vector <prod> prods(6);
     vector <shop> shops;
-    vector <agent> agents;
+    vector <pair<int,agent>> agents;
     int choice,f=1;
     while (f){
         cout<<"What do you wanna do?"<<endl;
@@ -87,8 +86,8 @@ int main()
                         cin>>a.name;
                         cout<<"Enter zipcode: ";
                         cin>>a.zip;
-                        a.prodDelivered=0;
-                        agents.push_back(a);
+                        agents.push_back({0,a});
+                        sort(agents.begin(),agents.end());
                         break;
                     }
                 }
@@ -133,8 +132,8 @@ int main()
                 {
                 for(auto &a : agents)
                     {
-                        printf("id: %d    name: ",a.id);
-                        cout<<a.name<<endl;
+                        printf("id: %d    name: ",a.second.id);
+                        cout<<a.second.name<<endl;
                     }
                 }
                 cout<<endl;
@@ -181,7 +180,7 @@ int main()
                         cin>>id;
                         for(auto i = agents.begin(); i<agents.end();i++)
                         {
-                            if(i->id==id)
+                            if((*i).second.id==id)
                             {
                                 f=1;
                                 agents.erase(i);
@@ -234,8 +233,8 @@ int main()
                 {
                 for(auto &a : agents)
                     {
-                        printf("id: %d    name: ",a.id);
-                        cout<<a.name<<endl;
+                        printf("id: %d    name: ",a.second.id);
+                        cout<<a.second.name<<endl;
                     }
                 }
                 cout<<endl;
@@ -247,7 +246,8 @@ int main()
                 cout<<"Choose shop by entering id:\n";
                 for(auto &s : shops)
                 {
-                    printf("id: %d    name: %s\n",s.id,s.name);
+                    printf("id: %d    name: ",s.id);
+                    cout<<s.name<<endl;
                 }
                 cin>>id;
                 auto it = shops.begin();
@@ -268,7 +268,7 @@ int main()
             {
                 int cid,pid,q,zip,f=0;
                 shop valids;
-                agent valida;
+                pair <int,agent> valida;
                 customer cust;
                 cout<<"Enter your customer id: ";
                 cin>>cid;
@@ -297,12 +297,14 @@ int main()
                 }
                 for(auto &a: agents)
                 {
-                    if(a.zip==cust.zip)
+                    if(a.second.zip==cust.zip)
                     {
                         valida=a;
                         if(f==1)
                         {
                             f=2;
+                            a.first++;
+                            sort(agents.begin(),agents.end());
                         }
                         break;
                     }
@@ -317,8 +319,14 @@ int main()
                 }
                 else
                 {
-                    cust.pList.push_back({pid,q});
-                    cout<<"Order placed successfully.\n";
+                    for(auto &c: custs)
+                {
+                    if(c.id==cust.id)
+                    {
+                        c.pList.push_back({pid,q});
+                        cout<<"Order placed successfully.\n";
+                    }
+                }
                 }
                 break;
             }
@@ -356,7 +364,8 @@ int main()
                 cout<<"Choose shop by entering id:\n";
                 for(auto &s : shops)
                 {
-                    printf("id: %d    name: %s\n",s.id,s.name);
+                    printf("id: %d    name: ",s.id);
+                    cout<<s.name<<endl;
                 }
                 cin>>id;
                 auto it = shops.begin();
