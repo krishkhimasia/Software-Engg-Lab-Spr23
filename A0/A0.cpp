@@ -29,6 +29,19 @@ typedef struct _agent{      //products delivered is stored in the vector of <int
     int zip;
 }agent;
 
+
+bool comp(pair<int,agent> a, pair<int,agent> b)
+{
+    if(a.first!=b.first)
+    {
+        return a.first<b.first;
+    }
+    else
+    {
+        return a.second.id<b.second.id;
+    }
+}
+
 int main()
 {
     vector <customer> custs;
@@ -87,7 +100,7 @@ int main()
                         cout<<"Enter zipcode: ";
                         cin>>a.zip;
                         agents.push_back({0,a});
-                        sort(agents.begin(),agents.end());
+                        sort(agents.begin(),agents.end(),comp);
                         break;
                     }
                 }
@@ -123,7 +136,7 @@ int main()
                         cout<<s.name<<endl;
                     }
                 }
-                cout<<"\nAgents:\n";
+                cout<<"\nAgents (sorted by no. of deliveries):\n";
                 if(!agents.size())
                 {
                     cout<<"No agents\n";
@@ -304,7 +317,7 @@ int main()
                         {
                             f=2;
                             a.first++;
-                            sort(agents.begin(),agents.end());
+                            sort(agents.begin(),agents.end(),comp);
                         }
                         break;
                     }
