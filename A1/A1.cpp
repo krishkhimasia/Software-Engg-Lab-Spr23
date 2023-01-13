@@ -118,12 +118,38 @@ node *addremoveterm(Polyn p1, int d)
     //     prev=h;
     //     h=h->next;
     // }
+    node *h=p1.c;
+    node *prev=h;
+    if(h->deg==d)
+    {
+        node *t=h;
+        h=h->next;
+        p1.c=h;
+        prev=h;
+        free(t);
+        return p1.c;
+    }
+    while(h!=NULL)
+    {
+        if(h->deg==d)
+        {
+            prev->next=h->next;
+            free(h);
+        }
+        prev=h;
+        h=h->next;
+    }
     cout<<"New polynomial is: ";
     printPoly(p1);
+    return p1.c;
 }
 
-void addremoveterm(Polyn p1, int a, int b, double eps)      //***not able to call it twice
+void addremoveterm(Polyn p1, int a, int b, double eps=1e-9)      //***not able to call it twice
 {
+    if(eps<1e-9)
+    {
+        return;
+    }
     node *h=p1.c;
     node *prev=h;
     if(h->coeff<eps)
@@ -157,7 +183,92 @@ void addremoveterm(Polyn p1, int a, int b, double eps)      //***not able to cal
     printPoly(p1);
 }
 
-//function to insert node h in sorted list based on degree
+Polyn add(Polyn p1, Polyn p2)
+{
+    Polyn p;
+    p.c=allocate();
+    node *h1=p1.c;
+    node *h2=p2.c;
+    node *h=p.c;
+    if(h1->deg==h2->deg)
+    {
+        node *t=allocate();
+        t->deg=h1->deg;
+        t->coeff=h1->coeff+h2->coeff;
+        p.c=t;
+        h=t;
+        h1=h1->next;
+        h2=h2->next;
+    }
+    else if(h1->deg<h2->deg)
+    {
+        node *t=allocate();
+        t->deg=h1->deg;
+        t->coeff=h1->coeff;
+        p.c=t;
+        h=t;
+        h1=h1->next;
+    }
+    else if(h1->deg>h2->deg)
+    {
+        node *t=allocate();
+        t->deg=h2->deg;
+        t->coeff=h2->coeff;
+        p.c=t;
+        h=t;
+        h2=h2->next;
+    }
+    while(h1!=NULL && h2!=NULL)
+    {
+        if(h1->deg==h2->deg)
+        {
+            node *t=allocate();
+            t->deg=h1->deg;
+            t->coeff=h1->coeff+h2->coeff;
+            h->next=t;
+            h=h->next;
+            h1=h1->next;
+            h2=h2->next;
+        }
+        else if(h1->deg<h2->deg)
+        {
+            node *t=allocate();
+            t->deg=h1->deg;
+            t->coeff=h1->coeff;
+            h->next=t;
+            h=h->next;
+            h1=h1->next;
+        }
+        else if(h1->deg>h2->deg)
+        {
+            node *t=allocate();
+            t->deg=h2->deg;
+            t->coeff=h2->coeff;
+            h->next=t;
+            h=h->next;
+            h2=h2->next;
+        }
+    }
+    while(h1!=NULL)
+    {
+        node *t=allocate();
+        t->deg=h1->deg;
+        t->coeff=h1->coeff;
+        h->next=t;
+        h=h->next;
+        h1=h1->next;
+    }
+    while(h2!=NULL)
+    {
+        node *t=allocate();
+        t->deg=h2->deg;
+        t->coeff=h2->coeff;
+        h->next=t;
+        h=h->next;
+        h2=h2->next;
+    }
+    return p;
+}
 
 int main()
 {   
@@ -210,7 +321,7 @@ int main()
                 addremoveterm(p,d,coef);
                 break;
             }
-            case 3:     //REMOVE TERM, got issues
+            case 3:     //REMOVE TERM, works perfectly
             {
                 Polyn p;
                 int c;
@@ -223,7 +334,7 @@ int main()
                 p.c=addremoveterm(p,d);
                 break;
             }
-            case 4:     //REMOVE ALL <EPSILON, got issues
+            case 4:     //REMOVE ALL <EPSILON, works perfectly
             {
                 Polyn p;
                 int c;
@@ -236,9 +347,28 @@ int main()
                 addremoveterm(p,0,0,eps);
                 break;
             }
-            case 5:
+            case 5:     //ADDS TWO POLYNOMIALS, works perfectly
             {
-
+                Polyn p1,p2;
+                int c1,c2;
+                printf("Which polynomial to add?(according to order of insertion)");
+                cin>>c1>>c2;
+                for(int i=1;i<=size;i++)
+                {
+                    if(i==c1)
+                    {
+                        p1=polys[i];
+                    }
+                    if(i==c2)
+                    {
+                        p2=polys[i];
+                    }
+                }
+                Polyn p3=add(p1,p2);
+                cout<<"The polynomial "<<size+1<<" after adding the chosen polynomials is: \n";
+                printPoly(p3);
+                size++;
+                polys[size]=p3;
                 break;
             }
             case 6:
