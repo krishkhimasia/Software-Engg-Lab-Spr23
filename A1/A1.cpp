@@ -1,8 +1,9 @@
-#include<iostream>
+#include<iostream>      //need to check for negative polynomials
+#include<cmath>
 
 using namespace std;
 
-const int MAX=20;
+const int MAX=100;
 
 typedef struct _node{
     int deg;
@@ -25,7 +26,10 @@ typedef struct{
 void printPoly(Polyn p)
 {
     node *h=p.c;
+    if(h->deg!=0)
     printf("(%lf)x^%d",h->coeff,h->deg);
+    else
+    printf("(%lf)",h->coeff);
     h=h->next;
     while(h!=NULL)
     {
@@ -183,6 +187,18 @@ void addremoveterm(Polyn p1, int a, int b, double eps=1e-9)      //***not able t
     printPoly(p1);
 }
 
+double evaluate(Polyn p, double x)
+{
+    node *h=p.c;
+    double sum=0;
+    while(h!=NULL)
+    {
+        sum+=h->coeff*pow(x,h->deg);
+        h=h->next;
+    }
+    return sum;
+}
+
 Polyn add(Polyn p1, Polyn p2)
 {
     Polyn p;
@@ -270,13 +286,54 @@ Polyn add(Polyn p1, Polyn p2)
     return p;
 }
 
+Polyn differentiate(Polyn p)
+{
+    Polyn p1;
+    p1.c=allocate();
+    node *h=p.c;
+    node *c=p1.c;
+    if(h->deg==0)
+    {
+        h=h->next;
+    }
+    node *t=allocate();
+    t->coeff=h->coeff*h->deg;
+    t->deg=h->deg-1;
+    p1.c=t;
+    c=p1.c;
+    h=h->next;
+    while(h!=NULL)
+    {
+        node *t=allocate();
+        t->coeff=h->coeff*h->deg;
+        t->deg=h->deg-1;
+        c->next=t;
+        c=c->next;
+        h=h->next;
+    }
+    return p1;
+}
+
+double zeroNewton(Polyn p, double x0, double eps=1e-9)
+{
+    Polyn pd=differentiate(p);
+    double x1=x0-(evaluate(p,x0)/evaluate(pd,x0));
+    while(abs(x1-x0)>eps)
+    {
+        x0=x1;
+        x1=x0-(evaluate(p,x0)/evaluate(pd,x0));
+    }
+
+    return x1;
+}
+
 int main()
 {   
     int f=1,choice,size=0;
     Polyn polys[MAX];
     while(f)
     {
-        cout<<"\n\nWhat would you like to do?\n1)Create a polynomial.\n2)Add/replace a term to a polynomial.\n3)Remove a term of polynomial.\n4)Remove all terms with absolute coefficient values less than some epsilon.\n5)Add 2 polynomials.\n6)Differentiate a polynomial.\n6)Calculate a root of polynomial.\n7)Print a polynomial.\n8)Exit.\n\n";
+        cout<<"\n\nWhat would you like to do?\n1)Create a polynomial.\n2)Add/replace a term to a polynomial.\n3)Remove a term of polynomial.\n4)Remove all terms with absolute coefficient values less than some epsilon.\n5)Evaluate a polynomial for some x\n6)Add 2 polynomials.\n7)Differentiate a polynomial.\n8)Calculate a root of polynomial.\n9)Print a polynomial.\n10)Exit.\n\n";
         cin>>choice;
         switch(choice)
         {
@@ -347,11 +404,24 @@ int main()
                 addremoveterm(p,0,0,eps);
                 break;
             }
-            case 5:     //ADDS TWO POLYNOMIALS, works perfectly
+            case 5:     //EVALUATE POLYNOMIAL, works perfectly
+            {
+                Polyn p;
+                int c;
+                printf("Which polynomial to evaluate?(according to order of insertion)");
+                cin>>c;
+                p=polys[c];
+                double x;
+                cout<<"Enter x: ";
+                cin>>x;
+                cout<<"The value of the polynomial at x is: "<<evaluate(p,x);
+                break;
+            }
+            case 6:     //ADDS TWO POLYNOMIALS, works perfectly
             {
                 Polyn p1,p2;
                 int c1,c2;
-                printf("Which polynomial to add?(according to order of insertion)");
+                printf("Which polynomials to add?(according to order of insertion)");
                 cin>>c1>>c2;
                 for(int i=1;i<=size;i++)
                 {
@@ -371,12 +441,34 @@ int main()
                 polys[size]=p3;
                 break;
             }
-            case 6:
+            case 7:     //DIFFERENTIATES POLYNOMIAL, works perfectly
             {
-
+                Polyn p;
+                int c;
+                printf("Which polynomial to differentiate?(according to order of insertion)");
+                cin>>c;
+                p=polys[c];
+                Polyn p1=differentiate(p);
+                cout<<"The polynomial "<<size+1<<" after adding the chosen polynomials is: \n";
+                printPoly(p1);
+                size++;
+                polys[size]=p1;
                 break;
             }
-            case 7:     //PRINTS POLYNOMIAL, works perfectly
+            case 8:     //FINDS ROOT OF POLYNOMIAL, not working for (x-0.5)^2
+            {
+                Polyn p;
+                int c;
+                printf("Which polynomial to find root of?(according to order of insertion)");
+                cin>>c;
+                p=polys[c];
+                double x;
+                cout<<"Enter x: ";
+                cin>>x;
+                cout<<"The root of the polynomial is: "<<zeroNewton(p,x);
+                break;
+            }
+            case 9:     //PRINTS POLYNOMIAL, works perfectly
             {
                 int c;
                 cout<<"Which polynomial to print?(according to order of insertion)";
@@ -384,7 +476,7 @@ int main()
                 printPoly(polys[c]);
                 break;
             }
-            case 8:     //choice to exit
+            case 10:     //choice to exit
             {
                 f=0;
                 break;
