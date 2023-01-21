@@ -78,8 +78,9 @@ Polyn createPoly()      //creates polynomial according to user input
     return p;
 }
 
+void printAllPolys(Polyn polys[], int size);
 
-void deletePoly(Polyn polys[], int size)        //deletes chosen polynomial from polys[]
+void deletePoly(Polyn polys[], int &size)        //deletes chosen polynomial from polys[]
 {
     int c;
     printf("Which polynomial to delete?\n");
@@ -115,18 +116,18 @@ void printPoly(Polyn p)     //prints chosen polynomial
 }
 
 
-void addremoveterm(Polyn p1, int d, double c)       //adds new term of chosen degree 'd' and coeff 'c' to polynomial 'p1'
+void addremoveterm(Polyn &p1, int d, double c)       //adds new term of chosen degree 'd' and coeff 'c' to polynomial 'p1'
 {
     node *h=p1.c;
     node *t=allocate();
     t->deg=d;
     t->coeff=c;
-    insert(t,h);
+    p1.c=insert(t,h);
     cout<<"New polynomial is: ";
     printPoly(p1);
 }
 
-node *addremoveterm(Polyn p1, int d)        //removes term of chosen degree 'd' from polynomial 'p1'
+void addremoveterm(Polyn &p1, int d)        //removes term of chosen degree 'd' from polynomial 'p1'
 {
     node *h=p1.c;
     node *prev=h;
@@ -137,7 +138,6 @@ node *addremoveterm(Polyn p1, int d)        //removes term of chosen degree 'd' 
         p1.c=h;
         prev=h;
         free(t);
-        return p1.c;
     }
     while(h!=NULL)
     {
@@ -151,10 +151,9 @@ node *addremoveterm(Polyn p1, int d)        //removes term of chosen degree 'd' 
     }
     cout<<"New polynomial is: ";
     printPoly(p1);
-    return p1.c;
 }
 
-void addremoveterm(Polyn p1, int a, int b, double eps=1e-9)      //removes all terms in p1 with |coeff| < eps
+void addremoveterm(Polyn &p1, int a, int b, double eps)      //removes all terms in p1 with |coeff| < eps
 {
     node *h=p1.c;
     node *prev=h;
@@ -379,7 +378,7 @@ int main()
     Polyn polys[MAX];
     while(f)
     {
-        cout<<"\n\nWhat would you like to do?\n1)Create a polynomial.\n2)Delete a polynomial.\n3)Add/replace a term to a polynomial.\n4)Remove a term of polynomial.\n5)Remove all terms with absolute coefficient values less than some epsilon.\n6)Evaluate a polynomial for some x\n7)Add 2 polynomials.\n8)Differentiate a polynomial.\n9)Calculate a root of polynomial.\n10)Print all polynomials.\n11)Exit.\n\nEnter your choice: ";
+        cout<<"\n\nWhat would you like to do?\n1)Create a polynomial.\n2)Delete a polynomial.\n3)Add a term to a polynomial.\n4)Remove a term of polynomial.\n5)Remove all terms with absolute coefficient values less than some epsilon.\n6)Evaluate a polynomial for some x\n7)Add 2 polynomials.\n8)Differentiate a polynomial.\n9)Calculate a root of polynomial.\n10)Print all polynomials.\n11)Exit.\n\nEnter your choice: ";
         cin>>choice;
         switch(choice)
         {
@@ -394,18 +393,20 @@ int main()
             }
             case 2:     //DELETE POLYNOMIAL
             {
+                if(size)
                 deletePoly(polys,size);
+                else
+                cout<<"No polynomials to delete.\n";
                 break;
             }
             case 3:     //ADDS TERM
             {
-                Polyn p;
                 int c;
                 printf("Add a new term to which polynomial?\n");
                 printAllPolys(polys,size);
                 cout<<"Enter your choice: ";
                 cin>>c;
-                p=polys[c];
+                Polyn &p=polys[c];
                 int d,coef;
                 cout<<"Enter degree and coeff: ";
                 cin>>d>>coef;
@@ -414,28 +415,26 @@ int main()
             }
             case 4:     //REMOVES TERM
             {
-                Polyn p;
                 int c;
                 printf("Remove a term from which polynomial?\n");
                 printAllPolys(polys,size);
                 cout<<"Enter your choice: ";
                 cin>>c;
-                p=polys[c];
+                Polyn &p=polys[c];
                 int d;
                 cout<<"Enter degree: ";
                 cin>>d;
-                p.c=addremoveterm(p,d);
+                addremoveterm(p,d);
                 break;
             }
             case 5:     //REMOVE ALL TERMS WITH COEFF<EPSILON
             {
-                Polyn p;
                 int c;
                 printf("Which polynomial to change?\n");
                 printAllPolys(polys,size);
                 cout<<"Enter your choice: ";
                 cin>>c;
-                p=polys[c];
+                Polyn &p=polys[c];
                 double eps;
                 cout<<"Enter epsilon: ";
                 cin>>eps;
@@ -533,4 +532,3 @@ int main()
     }
     return 0;
 }
-
