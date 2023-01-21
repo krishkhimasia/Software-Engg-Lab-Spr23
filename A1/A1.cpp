@@ -12,7 +12,7 @@ typedef struct _node{
     struct _node *next;
 }node;
 
-node *allocate()
+node *allocate()        //allocates memory for a new node
 {
     node *head = new node;
     head->next=NULL;
@@ -28,13 +28,13 @@ node *insert(node *h, node *head)       //code to insert node in sorted order ba
 {
     node *prev=head;
     node *current=head->next;
-    if(prev->deg>h->deg)
+    if(prev->deg>h->deg)        //if degree of new term if less than degree of first term, head is changed
     {
         h->next=prev;
         head=h;
         return head;
     }
-    while(current!=NULL)
+    while(current!=NULL)        //loop though nodes and insert new node in sorted order
     {
         if(current->deg>h->deg)
         {
@@ -78,23 +78,6 @@ Polyn createPoly()      //creates polynomial according to user input
     return p;
 }
 
-void printAllPolys(Polyn polys[], int size);
-
-void deletePoly(Polyn polys[], int &size)        //deletes chosen polynomial from polys[]
-{
-    int c;
-    printf("Which polynomial to delete?\n");
-    printAllPolys(polys,size);
-    cout<<"Enter your choice: ";
-    cin>>c;
-    for(int i=c;i<size;i++)
-    {
-        polys[i]=polys[i+1];
-    }
-    size--;
-    cout<<"Polynomial deleted.\n";
-}
-
 
 void printPoly(Polyn p)     //prints chosen polynomial
 {
@@ -116,13 +99,47 @@ void printPoly(Polyn p)     //prints chosen polynomial
 }
 
 
+void printAllPolys(Polyn polys[], int size)     //lists all the polynomials present in polys[]
+{
+    if(size)
+    {
+        for(int i=1;i<=size;i++)
+        {
+            cout<<i<<": ";
+            printPoly(polys[i]);
+            cout<<endl;
+        }
+    }
+    else
+    {
+        cout<<"No polynomials present.\n";
+    }
+}
+
+void deletePoly(Polyn polys[], int &size)        //deletes chosen polynomial from polys[]
+{
+    int c;
+    printf("Which polynomial to delete?\n");
+    printAllPolys(polys,size);
+    cout<<"Enter your choice: ";
+    cin>>c;
+    for(int i=c;i<size;i++)
+    {
+        polys[i]=polys[i+1];
+    }
+    size--;
+    cout<<"Polynomial deleted.\n";
+}
+
+
+
 void addremoveterm(Polyn &p1, int d, double c)       //adds new term of chosen degree 'd' and coeff 'c' to polynomial 'p1'
 {
     node *h=p1.c;
     node *t=allocate();
     t->deg=d;
     t->coeff=c;
-    p1.c=insert(t,h);
+    p1.c=insert(t,h);       //inserts new term in sorted order
     cout<<"New polynomial is: ";
     printPoly(p1);
 }
@@ -131,7 +148,7 @@ void addremoveterm(Polyn &p1, int d)        //removes term of chosen degree 'd' 
 {
     node *h=p1.c;
     node *prev=h;
-    if(h->deg==d)
+    if(h->deg==d)       //if first term has degree 'd', then it is removed and head is changed to next element
     {
         node *t=h;
         h=h->next;
@@ -139,7 +156,7 @@ void addremoveterm(Polyn &p1, int d)        //removes term of chosen degree 'd' 
         prev=h;
         free(t);
     }
-    while(h!=NULL)
+    while(h!=NULL)      //if any other term has degree 'd', then it is removed
     {
         if(h->deg==d)
         {
@@ -207,7 +224,7 @@ Polyn add(Polyn p1, Polyn p2)       //adds polynomials 'p1' and 'p2'
     node *h1=p1.c;
     node *h2=p2.c;
     node *h=p.c;
-    if(h1->deg==h2->deg)
+    if(h1->deg==h2->deg)        //add coeffs of terms with same degree
     {
         node *t=allocate();
         t->deg=h1->deg;
@@ -217,7 +234,7 @@ Polyn add(Polyn p1, Polyn p2)       //adds polynomials 'p1' and 'p2'
         h1=h1->next;
         h2=h2->next;
     }
-    else if(h1->deg<h2->deg)
+    else if(h1->deg<h2->deg)        //add term with degree only in p1
     {
         node *t=allocate();
         t->deg=h1->deg;
@@ -226,7 +243,7 @@ Polyn add(Polyn p1, Polyn p2)       //adds polynomials 'p1' and 'p2'
         h=t;
         h1=h1->next;
     }
-    else if(h1->deg>h2->deg)
+    else if(h1->deg>h2->deg)        //add term with degree only in p2
     {
         node *t=allocate();
         t->deg=h2->deg;
@@ -237,7 +254,7 @@ Polyn add(Polyn p1, Polyn p2)       //adds polynomials 'p1' and 'p2'
     }
     while(h1!=NULL && h2!=NULL)
     {
-        if(h1->deg==h2->deg)
+        if(h1->deg==h2->deg)        //add coeffs of terms with same degree
         {
             node *t=allocate();
             t->deg=h1->deg;
@@ -247,7 +264,7 @@ Polyn add(Polyn p1, Polyn p2)       //adds polynomials 'p1' and 'p2'
             h1=h1->next;
             h2=h2->next;
         }
-        else if(h1->deg<h2->deg)
+        else if(h1->deg<h2->deg)        //add term with degree only in p1
         {
             node *t=allocate();
             t->deg=h1->deg;
@@ -256,7 +273,7 @@ Polyn add(Polyn p1, Polyn p2)       //adds polynomials 'p1' and 'p2'
             h=h->next;
             h1=h1->next;
         }
-        else if(h1->deg>h2->deg)
+        else if(h1->deg>h2->deg)        //add term with degree only in p2
         {
             node *t=allocate();
             t->deg=h2->deg;
@@ -266,7 +283,7 @@ Polyn add(Polyn p1, Polyn p2)       //adds polynomials 'p1' and 'p2'
             h2=h2->next;
         }
     }
-    while(h1!=NULL)
+    while(h1!=NULL)         //add remaining terms in p1
     {
         node *t=allocate();
         t->deg=h1->deg;
@@ -275,7 +292,7 @@ Polyn add(Polyn p1, Polyn p2)       //adds polynomials 'p1' and 'p2'
         h=h->next;
         h1=h1->next;
     }
-    while(h2!=NULL)
+    while(h2!=NULL)         //add remaining terms in p2
     {
         node *t=allocate();
         t->deg=h2->deg;
@@ -315,7 +332,7 @@ Polyn differentiate(Polyn p)        //differentiates polynomial 'p'
             h=h->next;
         }
         node *t=allocate();
-        t->coeff=h->coeff*h->deg;
+        t->coeff=h->coeff*h->deg;       //standard differentiation
         t->deg=h->deg-1;
         p1.c=t;
         c=p1.c;
@@ -360,16 +377,6 @@ double zeroNewton(Polyn p, double x0, double eps=1e-9)      //finds root of poly
     }
 
     return x1;
-}
-
-void printAllPolys(Polyn polys[], int size)     //lists all the polynomials present in polys[]
-{
-    for(int i=1;i<=size;i++)
-    {
-        cout<<i<<": ";
-        printPoly(polys[i]);
-        cout<<endl;
-    }
 }
 
 int main()
