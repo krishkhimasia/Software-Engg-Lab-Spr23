@@ -13,3 +13,7 @@ class Download(object):
             path: download path with the file name
             url: required image URL
         '''
+        res = requests.get(url, stream= True)
+        img = Image.open(BytesIO(res.content))
+        path+="/down.png"
+        img.save(path)
