@@ -11,14 +11,17 @@ class BlurImage(object):
             Arguments:
             radius (int): radius to blur
         '''
+        self._radius=radius
   
 
     def __call__(self, image):
         '''
             Arguments:
             image (numpy array or PIL Image)
-
+            
             Returns:
             image (numpy array or PIL Image)
         '''
+        blurredImage=image.filter(ImageFilter.GaussianBlur(radius = self._radius))
+        return blurredImage
 
