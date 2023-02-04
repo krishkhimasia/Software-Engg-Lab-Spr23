@@ -15,5 +15,4 @@ class Download(object):
         '''
         res = requests.get(url, stream= True)
         img = Image.open(BytesIO(res.content))
-        path+="/down.png"
         img.save(path)
