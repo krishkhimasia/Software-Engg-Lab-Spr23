@@ -11,6 +11,7 @@ class RotateImage(object):
             Arguments:
             degrees: rotation degree.
         '''
+        self._degrees=degrees
 
     def __call__(self, sample):
         '''
@@ -20,3 +21,5 @@ class RotateImage(object):
             Returns:
             image (numpy array or PIL image)
         '''
+        rotatedSample=sample.rotate(self._degrees, expand = 1)
+        return rotatedSample
