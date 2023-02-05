@@ -40,30 +40,30 @@ def experiment(annotation_file, captioner, transforms, outputs):
     #Transform the required image (roll number mod 10) and save it seperately
     #My roll no. is 21CS10037, so I need to transform 7.jpg
     path="./data/imgs/7.jpg"
-    transformedImg=data.__transformitem__(path)
-    destination = outputs+"/transformed_7.jpg"
-    if not os.path.exists(destination):
-        transformedImg.save(destination)
+    # destination = outputs+"/transformed_7.jpg"
+    # if not os.path.exists(destination):
+    #     transformedImg.save(destination)
+    l=len(transforms)
+    for i in range(l):
+        transformedImg=data.__transformitem__(path)
+        dest=outputs+"/trans_"+str(i+1)+".jpg"
+        if not os.path.exists(dest):
+            transformedImg.save(dest)
 
 
     #Get the predictions from the captioner for the above saved transformed image  
-    print("CAPTIONS FOR TRANSFORMED IMAGE:")
-    path=outputs+"/transformed_7.jpg"
-    caps=captioner(path,3)
-    for cap in caps:
-        print(cap)
+    for i in range(l):
+        print("CAPTIONS FOR TRANSFORMED IMAGE "+str(i+1)+" :")
+        path=outputs+"/trans_"+str(i+1)+".jpg"
+        caps=captioner(path,3)
+        for cap in caps:
+            print(cap)
 
 def main():
     captioner = ImageCaptioningModel()
     target_image=Image.open("data/imgs/7.jpg")
     w,h=target_image.size
-    experiment('./data/annotations.jsonl', captioner, [], "./data/imgs/outputs/T1") 
-    experiment('./data/annotations.jsonl', captioner, [FlipImage()], "./data/imgs/outputs/T2") 
-    experiment('./data/annotations.jsonl', captioner, [BlurImage(1)], "./data/imgs/outputs/T3") 
-    experiment('./data/annotations.jsonl', captioner, [RescaleImage((2*w,2*h))], "./data/imgs/outputs/T4") 
-    experiment('./data/annotations.jsonl', captioner, [RescaleImage((int(w/2),int(h/2)))], "./data/imgs/outputs/T5") 
-    experiment('./data/annotations.jsonl', captioner, [RotateImage(270)], "./data/imgs/outputs/T6") 
-    experiment('./data/annotations.jsonl', captioner, [RotateImage(45)], "./data/imgs/outputs/T7") 
+    experiment('./data/annotations.jsonl', captioner, [None,FlipImage(),BlurImage(1),RescaleImage((2*w,2*h)),RescaleImage((int(w/2),int(h/2))),RotateImage(270),RotateImage(45)], "./data/imgs/outputs")  
 
 
 if __name__ == '__main__':
