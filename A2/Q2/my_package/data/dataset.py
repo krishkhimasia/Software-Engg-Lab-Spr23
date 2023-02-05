@@ -20,7 +20,7 @@ class Dataset(object):
         self._transforms=transforms
      
 
-    def __len__(self):
+    def __len__(self):          #iterates through the jsonl and returns number of data points
         '''
             return the number of data points in the dataset
         '''
@@ -31,7 +31,7 @@ class Dataset(object):
         return cnt
 
     
-    def __getann__(self, idx):
+    def __getann__(self, idx):      #jsonl can act as a list of objects(dicts)
         '''
             return the data items for the index idx as an object
         '''
@@ -40,13 +40,11 @@ class Dataset(object):
             return list(reader)[idx]
         
 
-    def __transformitem__(self, path):
+    def __transformitem__(self, path):      #every transform in transforms list is applied to the given image
         '''
             return transformed PIL Image object for the image in the given path
         '''
         img=Image.open(path)
-        im=img
-        transform=self._transforms.pop(0)
-        if transform is not None:
-            im=transform(img)
-        return im
+        for transform in self._transforms:
+            img=transform(img)
+        return img
