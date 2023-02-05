@@ -46,5 +46,5 @@ class Dataset(object):
         '''
         img=Image.open(path)
         for transform in self._transforms:
-            im=transform(im)
-        return im
+            img=transform(img)
+        return img
