@@ -45,6 +45,8 @@ class Dataset(object):
             return transformed PIL Image object for the image in the given path
         '''
         img=Image.open(path)
-        for transform in self._transforms:
-            img=transform(img)
-        return img
+        transformedImg=img
+        transform=self._transforms.pop(0)
+        if transform is not None:
+            transformedImg=transform(img)
+        return transformedImg
