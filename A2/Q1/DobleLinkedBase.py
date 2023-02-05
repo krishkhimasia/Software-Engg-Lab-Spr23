@@ -37,16 +37,16 @@ class _DoubleLinkedBase:
 		"""Add element e between two existing nodes and return new node"""
 		newest = self._Node(e, predecessor, successor)
 		# ===== Start writing your code here =====
-		self._size+=1
+		self._size+=1		#update size as we added a node
 		return newest
 		# ===== End writing your code here =====
 
 	def _delete_node(self, node):
 		"""Delete nonsentinel node from the list and return its elements"""
 		# ===== Start writing your code here =====
-		node._prev._next=node._next
+		node._prev._next=node._next		#make connections b/w nodes neighboring the one being removed
 		node._next._prev=node._prev
-		self._size-=1
+		self._size-=1		#update size as we remove a node
 		return node._element
 		# ===== End writing your code here =====
 
