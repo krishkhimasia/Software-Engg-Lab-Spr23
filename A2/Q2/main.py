@@ -40,9 +40,6 @@ def experiment(annotation_file, captioner, transforms, outputs):
     #Transform the required image (roll number mod 10) and save it seperately
     #My roll no. is 21CS10037, so I need to transform 7.jpg
     path="./data/imgs/7.jpg"
-    # destination = outputs+"/transformed_7.jpg"
-    # if not os.path.exists(destination):
-    #     transformedImg.save(destination)
     l=len(transforms)
     for i in range(l):
         transformedImg=data.__transformitem__(path)
@@ -61,6 +58,9 @@ def experiment(annotation_file, captioner, transforms, outputs):
 
 def main():
     captioner = ImageCaptioningModel()
+    if not os.path.exists("./data/imgs/outputs"):
+        os.mkdir("./data/imgs/outputs")
+    experiment('./data/annotations.jsonl', captioner, [], "./data/imgs/outputs")        #called once to download all the images, so I can access dimensions of 7.jpg which are needed for rescaling in the analysis task
     target_image=Image.open("data/imgs/7.jpg")
     w,h=target_image.size
     experiment('./data/annotations.jsonl', captioner, [None,FlipImage(),BlurImage(1),RescaleImage((2*w,2*h)),RescaleImage((int(w/2),int(h/2))),RotateImage(270),RotateImage(45)], "./data/imgs/outputs")  
