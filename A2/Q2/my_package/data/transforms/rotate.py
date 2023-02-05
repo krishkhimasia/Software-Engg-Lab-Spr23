@@ -21,5 +21,5 @@ class RotateImage(object):
             Returns:
             image (numpy array or PIL image)
         '''
-        rotatedSample=sample.rotate(self._degrees, expand = 1)
+        rotatedSample=sample.rotate(self._degrees, expand = 1)      #expand=1 so that the new image can fit the rotated one
         return rotatedSample

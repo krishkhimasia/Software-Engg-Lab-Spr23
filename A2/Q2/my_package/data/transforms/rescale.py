@@ -26,7 +26,7 @@ class RescaleImage(object):
 
             Note: You do not need to resize the bounding boxes. ONLY RESIZE THE IMAGE.
         '''
-        w,h= image.size
+        w,h= image.size         #get original image size
         if type(self._size)==int:
             if(w<=h):
                 img=image.resize((self._size,int((self._size/w)*h)))

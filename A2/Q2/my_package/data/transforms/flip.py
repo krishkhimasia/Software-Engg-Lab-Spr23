@@ -21,7 +21,7 @@ class FlipImage(object):
             Returns:
             image (numpy array or PIL image)
         '''
-        if self._flip_type=='vertical':
+        if self._flip_type=='vertical':         #using appropriate PIL function to flip according to user input
             flippedImage=image.transpose(Image.FLIP_TOP_BOTTOM)
         else:
             flippedImage=image.transpose(Image.FLIP_LEFT_RIGHT)
