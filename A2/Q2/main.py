@@ -47,7 +47,11 @@ def experiment(annotation_file, captioner, transforms, outputs):
 
 
     #Get the predictions from the captioner for the above saved transformed image  
-
+    print("CAPTIONS FOR TRANSFORMED IMAGE:")
+    path=outputs+"/transformed_7.jpg"
+    caps=captioner(path,3)
+    for cap in caps:
+        print(cap)
 
 def main():
     captioner = ImageCaptioningModel()
