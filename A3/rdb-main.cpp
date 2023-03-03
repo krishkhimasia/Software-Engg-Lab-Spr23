@@ -85,6 +85,11 @@ int main()
             int relInd;
             cout << "Enter index of relation: ";
             cin >> relInd;
+            if((relations.size()==0) || (relInd>relations.size()-1) || (relInd<0))
+            {
+                cout<<"Invalid index!\n\n";
+                break;
+            }
             relations[relInd]->print();
             break;
         }
