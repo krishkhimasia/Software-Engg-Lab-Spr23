@@ -27,7 +27,7 @@ class _DoubleLinkedBase:
 	def is_empty(self):
 		"""Return true if list is empty"""
 		# ===== Start writing your code here =====
-		if self._header._next==self._trailer:
+		if self._size==0:
 			return True
 		else:
 			return False
@@ -37,6 +37,12 @@ class _DoubleLinkedBase:
 		"""Add element e between two existing nodes and return new node"""
 		newest = self._Node(e, predecessor, successor)
 		# ===== Start writing your code here =====
+		if(predecessor._next!=successor):
+			print("Error: Invalid predecessor and successor, they aren't neighbours")
+			dummyNode=self._Node(0, predecessor, successor)
+			return dummyNode
+		predecessor._next=newest
+		successor._prev=newest
 		self._size+=1		#update size as we added a node
 		return newest
 		# ===== End writing your code here =====
@@ -50,3 +56,26 @@ class _DoubleLinkedBase:
 		return node._element
 		# ===== End writing your code here =====
 
+n = _DoubleLinkedBase()
+n5=n._insert_between(5, n._header, n._trailer)
+print(n5._element)
+
+print(n.__len__())
+
+n6=n._insert_between(6, n5, n._trailer)
+print(n6._element)
+
+n4=n._insert_between(4, n._header, n5)
+print(n4._element)
+
+print(n.__len__())
+
+n9=n._insert_between(9, n5, n6)
+print(n9._element)
+
+n9=n._insert_between(9, n5, n6)
+
+ele = n._delete_node(n9)
+print(ele)
+
+print(n.is_empty())
