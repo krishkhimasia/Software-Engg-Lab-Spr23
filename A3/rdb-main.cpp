@@ -93,7 +93,7 @@ int main()
             relations[relInd]->print();
             break;
         }
-        case 4:         // union, just need to add compatibility checker
+        case 4:         // union
         {
             Relation *r1, *r2;
             int relInd1, relInd2;
@@ -115,7 +115,7 @@ int main()
             }
             break;
         }
-        case 5:         // difference, just need to add compatibility checker
+        case 5:         // difference
         {
             Relation *r1, *r2;
             int relInd1, relInd2;
