@@ -14,7 +14,7 @@ public:
     virtual bool operator<(const Attr &right) = 0;
     virtual bool operator>(const Attr &right) = 0;
     virtual void printValue() const = 0;
-    virtual int getType() const = 0;
+    virtual int getType() const = 0;        //returns 1 for int, 2 for string, 3 for float
 };
 
 // derived classes of Attr
