@@ -1,12 +1,14 @@
-#include<iostream>
+#include<iostream>      //just need to print as proper table
 #include<vector>
 #include<list>
 #include<tuple>
+#include<iomanip>
 #include"rdb.h"
 
 int main()
 {
     vector<Relation *> relations;
+    vector<int> deletedInds;
     int choice;
     while (true)
     {
@@ -42,6 +44,11 @@ int main()
             int relInd;
             cout << "Enter index of relation: ";
             cin >> relInd;
+            if(!isIndexValid(relInd,deletedInds,relations))
+            {
+                cout<<"Relation "<<relInd<<" does not exist!\n\n";
+                break;
+            }
             Record *rec = new Record();
             for (int i = 0; i < relations[relInd]->getnAttr(); i++)
             {
@@ -85,9 +92,9 @@ int main()
             int relInd;
             cout << "Enter index of relation: ";
             cin >> relInd;
-            if((relations.size()==0) || (relInd>relations.size()-1) || (relInd<0))
+            if(!isIndexValid(relInd,deletedInds,relations))
             {
-                cout<<"Invalid index!\n\n";
+                cout<<"Relation "<<relInd<<" does not exist!\n\n";
                 break;
             }
             relations[relInd]->print();
@@ -101,6 +108,16 @@ int main()
             cin >> relInd1;
             cout << "Enter index of second relation: ";
             cin >> relInd2;
+            if(!isIndexValid(relInd1,deletedInds,relations))
+            {
+                cout<<"Relation "<<relInd1<<" does not exist!\n\n";
+                break;
+            }
+            if(!isIndexValid(relInd2,deletedInds,relations))
+            {
+                cout<<"Relation "<<relInd2<<" does not exist!\n\n";
+                break;
+            }
             r1 = relations[relInd1];
             r2 = relations[relInd2];
             if(areCompatible(r1,r2))
@@ -123,6 +140,16 @@ int main()
             cin >> relInd1;
             cout << "Enter index of second relation: ";
             cin >> relInd2;
+            if(!isIndexValid(relInd1,deletedInds,relations))
+            {
+                cout<<"Relation "<<relInd1<<" does not exist!\n\n";
+                break;
+            }
+            if(!isIndexValid(relInd2,deletedInds,relations))
+            {
+                cout<<"Relation "<<relInd2<<" does not exist!\n\n";
+                break;
+            }
             r1 = relations[relInd1];
             r2 = relations[relInd2];
             if(areCompatible(r1,r2))
@@ -145,6 +172,16 @@ int main()
             cin >> relInd1;
             cout << "Enter index of second relation: ";
             cin >> relInd2;
+            if(!isIndexValid(relInd1,deletedInds,relations))
+            {
+                cout<<"Relation "<<relInd1<<" does not exist!\n\n";
+                break;
+            }
+            if(!isIndexValid(relInd2,deletedInds,relations))
+            {
+                cout<<"Relation "<<relInd2<<" does not exist!\n\n";
+                break;
+            }
             r1 = relations[relInd1];
             r2 = relations[relInd2];
             Relation *r = cartesianproduct(r1, r2);
@@ -158,6 +195,11 @@ int main()
             int relInd;
             cout << "Enter index of relation: ";
             cin >> relInd;
+            if(!isIndexValid(relInd,deletedInds,relations))
+            {
+                cout<<"Relation "<<relInd<<" does not exist!\n\n";
+                break;
+            }
             r = relations[relInd];
             DNFformula *f;
             f = new DNFformula();
@@ -215,6 +257,11 @@ int main()
             int relInd;
             cout << "Enter index of relation: ";
             cin >> relInd;
+            if(!isIndexValid(relInd,deletedInds,relations))
+            {
+                cout<<"Relation "<<relInd<<" does not exist!\n\n";
+                break;
+            }
             r = relations[relInd];
             list<string> attrNames;
             int n;
@@ -238,6 +285,11 @@ int main()
             int relInd;
             cout << "Enter index of relation: ";
             cin >> relInd;
+            if(!isIndexValid(relInd,deletedInds,relations))
+            {
+                cout<<"Relation "<<relInd<<" does not exist!\n\n";
+                break;
+            }
             r = relations[relInd];
             string attr;
             string newName;
@@ -257,6 +309,16 @@ int main()
             cin >> relInd1;
             cout << "Enter index of second relation: ";
             cin >> relInd2;
+            if(!isIndexValid(relInd1,deletedInds,relations))
+            {
+                cout<<"Relation "<<relInd1<<" does not exist!\n\n";
+                break;
+            }
+            if(!isIndexValid(relInd2,deletedInds,relations))
+            {
+                cout<<"Relation "<<relInd2<<" does not exist!\n\n";
+                break;
+            }
             r1 = relations[relInd1];
             r2 = relations[relInd2];
             list<string> joinattr;
@@ -280,8 +342,14 @@ int main()
             int relInd;
             cout << "Enter index of relation to delete: ";
             cin >> relInd;
+            if(!isIndexValid(relInd,deletedInds,relations))
+            {
+                cout<<"Relation "<<relInd<<" does not exist!\n\n";
+                break;
+            }
             delete relations[relInd];
             cout<<"Relation "<<relInd<<" deleted.\n\n";
+            deletedInds.push_back(relInd);
             break;
         }
         case 12:            //exit
@@ -289,7 +357,14 @@ int main()
             cout << "Thanks for using this program!\n";
             for (int i = 0; i < relations.size(); i++)
             {
-                delete relations[i];
+                int f=1;
+                for(int j=0;j<deletedInds.size();j++)
+                {
+                    if(i==deletedInds[j])
+                        f=0;
+                }
+                if(f)
+                    delete relations[i];
             }
             return 0;
         }
