@@ -13,7 +13,8 @@ public:
     virtual bool operator>=(const Attr &right) = 0;
     virtual bool operator<(const Attr &right) = 0;
     virtual bool operator>(const Attr &right) = 0;
-    virtual void printValue() = 0;
+    virtual void printValue() const = 0;
+    virtual int getType() const = 0;
 };
 
 // derived classes of Attr
@@ -25,7 +26,8 @@ public:
     integerAttribute(int v);
     void setValue(int v);
     int getValue() const;
-    void printValue();
+    void printValue() const;
+    int getType() const;
     bool operator==(const Attr &right);
     bool operator!=(const Attr &right);
     bool operator<=(const Attr &right);
@@ -42,7 +44,8 @@ public:
     floatAttribute(float v);
     void setValue(float v);
     float getValue() const;
-    void printValue();
+    void printValue() const;
+    int getType() const;
     bool operator==(const Attr &right); 
     bool operator!=(const Attr &right); 
     bool operator<=(const Attr &right); 
@@ -59,7 +62,8 @@ public:
     stringAttribute(string v);
     void setValue(string v);
     string getValue() const;
-    void printValue();
+    void printValue() const;
+    int getType() const;
     bool operator==(const Attr &right);
     bool operator!=(const Attr &right);
     bool operator<=(const Attr &right);
@@ -124,6 +128,7 @@ public:
 
 // basic operations
 int areCompatible(Relation *R1, Relation *R2);
+int isIndexValid(int relInd, vector <int> deletedInds, vector <Relation *> relations);
 Relation* Union(Relation *R1, Relation *R2);
 Relation* difference(Relation *R1, Relation *R2);
 Relation *cartesianproduct(Relation *R1, Relation *R2);
