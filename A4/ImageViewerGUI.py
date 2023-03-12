@@ -13,7 +13,7 @@ def fileClick(clicked):
 
     # declared img_path as a global variable so that it can be used in the process function
     global img_path
-
+    global img
     img_types = [("jpg Images", "*.jpg")]
     img_path=filedialog.askopenfilename(initialdir="./data/imgs", filetypes=img_types, title="Select an image file")
     img=ImageTk.PhotoImage(Image.open(img_path))
@@ -75,7 +75,6 @@ if __name__ == '__main__':
     dropDown.grid(row=0,column=2)
     processButton.grid(row=0,column=3)
     output.grid(row=0,column=5,rowspan=2)
-    output.config(font="")
     
     # run the root window's mainloop
     root.mainloop()
